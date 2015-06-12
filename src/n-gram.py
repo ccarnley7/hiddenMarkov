@@ -1,6 +1,6 @@
 import random
 
-infilename = "vm-shared/textprep/2009-Obama.txt"
+infilename = "2009-obama.txt"
 trainingdata = open(infilename).read()
 
 contextconst = [""]
