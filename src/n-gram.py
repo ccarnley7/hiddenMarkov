@@ -5,7 +5,6 @@ testingFile = "testing.txt"
 trainingFile = "training.txt"
 infiledata = open(infilename).read()
 
-contextconst = [""]
 model = {}
 
 def chooseWord(wordDictionary):
@@ -34,7 +33,6 @@ def getWordList(context):
 
 
 def generateSenteces(context):
-    context = contextconst
     for i in range(100):
         word = chooseWord(model[str(context)])
         print(word,end=" ")
@@ -44,8 +42,6 @@ def generateSenteces(context):
 
 
 
-context = contextconst
 
-getWordList([''])
-context = contextconst
-generateSenteces([''])
+# getWordList([''])
+# generateSenteces([''])
