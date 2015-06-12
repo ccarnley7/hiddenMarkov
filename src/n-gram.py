@@ -1,5 +1,13 @@
 import random
 
+infilename = "2009-obama.txt"
+testingFile = "testing.txt"
+trainingFile = "training.txt"
+infiledata = open(infilename).read()
+
+contextconst = [""]
+model = {}
+
 def chooseWord(wordDictionary):
     total = 0
     probabilities = {}
@@ -16,30 +24,28 @@ def chooseWord(wordDictionary):
 
     return "ERROR"
 
+def getWordList(context):
+    for word in infiledata.split():
+        word = word.lower()
+        temp = model.setdefault(str(context),{})
+        temp[str(word)] = temp.get(str(word), 0) + 1
+        model[str(context)] = temp
+        context = (context+[word])[1:]
 
 
-infilename = "2009-obama.txt"
-trainingdata = open(infilename).read()
+def generateSenteces(context):
+    context = contextconst
+    for i in range(100):
+        word = chooseWord(model[str(context)])
+        print(word,end=" ")
+        context = (context+[word])[1:]
 
-contextconst = [""]
+    print()
+
+
 
 context = contextconst
-model = {}
 
-for word in trainingdata.split():
-    #print (word)
-    word = word.lower()
-    temp = model.setdefault(str(context),{})
-    temp[str(word)] = temp.get(str(word), 0) + 1
-    model[str(context)] = temp
-    context = (context+[word])[1:]
-
-#print(model)
-
+getWordList([''])
 context = contextconst
-for i in range(100):
-    word = chooseWord(model[str(context)])
-    print(word,end=" ")
-    context = (context+[word])[1:]
-
-print()
+generateSenteces([''])
