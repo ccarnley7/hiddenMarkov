@@ -4,8 +4,12 @@ infilename = "2009-obama.txt"
 testingFile = "testing.txt"
 trainingFile = "training.txt"
 infiledata = open(infilename).read()
+trainingData = open(trainingFile).read()
+testingData = open(testingFile).read()
 
 model = {}
+wordToTagModel = {}
+tagToWordModel = {}
 
 def chooseWord(wordDictionary):
     total = 0
@@ -40,8 +44,23 @@ def generateSenteces(context):
 
     print()
 
+def trainOnData():
+    for line in trainingData.splitlines():
+        context = ['']
+        for wordWithTag in line.split():
+            word = (wordWithTag.split("_")[0]).lower()
+            tag = wordWithTag.split("_")[1]
+            temp = wordToTagModel.setdefault(str(context),{})
+            temp[str(tag)] = temp.get(str(tag), 0) + 1
+            wordToTagModel[str(context)] = temp
 
+            tempTwo = tagToWordModel.setdefault(str(tag),{})
+            tempTwo[str(word)] = tempTwo.get(str(word), 0) + 1
+            tagToWordModel[str(tag)] = tempTwo
+
+            context = (context+[word])[1:]
 
 
 # getWordList([''])
 # generateSenteces([''])
+trainOnData()
