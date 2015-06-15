@@ -129,21 +129,19 @@ def useTestData():
             if isFirstWord:
                 isFirstWord = False
                 continue
-            currentMaxM = 0
+            currentMaxM = -1
             currentMaxTag = ""
             for outerTags in tagsAndMs:
-                probWordGivenTag = tagToWordModel.get(outerTags).get(word, 0)
-                currentInnerMaxM = 0
-                currentInnerMaxTag = ""
+                probWordGivenTag = tagToWordModel.get(outerTags).get(word, 0.00000000000001)
+                currentInnerMaxM = -1
                 for innerTag in tagsAndMs:
                     innerTagModel = tagToTagModel.get(innerTag)
-                    probTagToTag = innerTagModel.get(outerTags, 0)
+                    probTagToTag = innerTagModel.get(outerTags, 0.0000000000000001)
                     innerTagM = tagsAndMs[innerTag]
 
                     newInnerM = probTagToTag * innerTagM
                     if newInnerM > currentInnerMaxM:
                         currentInnerMaxM = newInnerM
-                        currentInnerMaxTag = innerTag
                 newM = probWordGivenTag*currentInnerMaxM
                 tagsAndMs[outerTags] = newM
                 if newM > currentMaxM:
@@ -173,7 +171,7 @@ def initCalcM(word):
                 maxM = newM
                 maxTag = tag
         else:
-            tagsAndMs[tag] = 0.000000001
+            tagsAndMs[tag] = 0.00000000000001
     return maxTag
 
 getWordList([''])
