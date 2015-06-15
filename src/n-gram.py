@@ -15,8 +15,11 @@ tagToWordModel = {}
 tagToTagProb = {}
 tagToWordProb = {}
 startSentenceList = {}
-listofTags = []
+tagsAndMs = {}
 totalSentences = 0
+
+correctGuesses = 0
+totalGuesses = 0
 
 def chooseWord(wordDictionary):
     total = 0
@@ -70,14 +73,14 @@ def trainOnData():
     global tagToWordModel
     global totalSentences
     global startSentenceList
-    global listofTags
+    global tagsAndMs
     for line in trainingData.splitlines():
         context = ['']
         firstWord = True
         for wordWithTag in line.split():
             word = (wordWithTag.split("_")[0]).lower()
             tag = wordWithTag.split("_")[1]
-            listofTags.append(tag)
+            tagsAndMs[tag] = 0
             if firstWord:
                 startSentenceList[tag] = startSentenceList.setdefault(tag, 0) + 1
                 totalSentences += 1
@@ -100,7 +103,7 @@ def trainOnData():
         startSentenceList[key] = value/totalSentences
     tagToTagModel = generateProp(tagToTagModel)
     tagToWordModel = generateProp(tagToWordModel)
-    listofTags = set(listofTags)
+    # tagsAndMs = set(listofTags)
 
 def getTagFromLine(line):
     lineDic = collections.OrderedDict()
@@ -111,12 +114,38 @@ def getTagFromLine(line):
     return lineDic
 
 def useTestData():
+    global correctGuesses
+    global totalGuesses
     for line in testingData.splitlines():
         dic = getTagFromLine(line)
-        for word in line:
+        items = list(dic.items())
+        firstWord = items[0][0]
+        maxMTag = initCalcM(firstWord)
+        if maxMTag is items[0][1]:
+            correctGuesses += 1
+        totalGuesses += 1
+    for word, tag in dic.items():
+
             print(word)
+
+def initCalcM(word):
+    maxM = 0
+    maxTag = ""
+    for tag in tagsAndMs:
+        if tag in startSentenceList:
+            startProb = startSentenceList[tag]
+            wordListProb = tagToWordModel.get(tag)
+            wordProb = wordListProb.get(word, 0)
+            newM = startProb*wordProb
+            tagsAndMs[tag] = newM
+            if newM > maxM:
+                maxM = newM
+                maxTag = tag
+        else:
+            tagsAndMs[tag](0)
+    return maxTag
 
 getWordList([''])
 # generateSenteces([''])
-# trainOnData()
+trainOnData()
 useTestData()
