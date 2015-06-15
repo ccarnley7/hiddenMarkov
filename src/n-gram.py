@@ -11,7 +11,7 @@ model = {}
 wordToTagModel = {}
 tagToWordModel = {}
 
-wordToTagProb = {}
+tagToTagProb = {}
 tagToWordProb = {}
 startSentenceList = {}
 listofTags = []
@@ -101,6 +101,12 @@ def trainOnData():
     tagToWordModel = generateProp(tagToWordModel)
     listofTags = set(listofTags)
 
+def useTrainingData():
+    for line in testingData.splitlines():
+        for word in line:
+            print(word)
+
 getWordList([''])
 # generateSenteces([''])
 trainOnData()
+useTrainingData()
