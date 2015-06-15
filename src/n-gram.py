@@ -122,7 +122,7 @@ def useTestData():
         items = list(dic.items())
         firstWord = items[0][0]
         maxMTag = initCalcM(firstWord)
-        if maxMTag is items[0][1]:
+        if maxMTag == items[0][1]:
             correctGuesses += 1
         totalGuesses += 1
         for word, realTag in dic.items():
@@ -149,7 +149,10 @@ def useTestData():
                 if newM > currentMaxM:
                     currentMaxM = newM
                     currentMaxTag = outerTags
-            if currentMaxTag is realTag:
+            if currentMaxTag == "":
+                currentMaxTag = "NN"
+            # print(currentMaxTag, ":", realTag)
+            if currentMaxTag == realTag:
                 correctGuesses += 1
             totalGuesses += 1
 
@@ -170,7 +173,7 @@ def initCalcM(word):
                 maxM = newM
                 maxTag = tag
         else:
-            tagsAndMs[tag] = 0
+            tagsAndMs[tag] = 0.000000001
     return maxTag
 
 getWordList([''])
