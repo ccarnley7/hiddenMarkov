@@ -13,6 +13,9 @@ tagToWordModel = {}
 
 wordToTagProb = {}
 tagToWordProb = {}
+startSentenceList = {}
+listofTags = []
+totalSentences = 0
 
 def chooseWord(wordDictionary):
     total = 0
@@ -64,24 +67,40 @@ def generateSenteces(context):
 def trainOnData():
     global wordToTagModel
     global tagToWordModel
+    global totalSentences
+    global startSentenceList
+    global listofTags
     for line in trainingData.splitlines():
         context = ['']
+        firstWord = True
         for wordWithTag in line.split():
             word = (wordWithTag.split("_")[0]).lower()
             tag = wordWithTag.split("_")[1]
-            temp = wordToTagModel.setdefault(str(context),{})
-            temp[str(tag)] = temp.get(str(tag), 0) + 1
-            wordToTagModel[str(context)] = temp
+            listofTags.append(tag)
+            if firstWord:
+                startSentenceList[tag] = startSentenceList.setdefault(tag, 0) + 1
+                totalSentences += 1
+
+                firstWord = False
+
+            else:
+                temp = wordToTagModel.setdefault(str(context),{})
+                temp[str(tag)] = temp.get(str(tag), 0) + 1
+                wordToTagModel[str(context)] = temp
 
             tempTwo = tagToWordModel.setdefault(str(tag),{})
             tempTwo[str(word)] = tempTwo.get(str(word), 0) + 1
             tagToWordModel[str(tag)] = tempTwo
 
-            context = (context+[word])[1:]
+            # context = (context+[word])[1:]
+            context = tag
+
+    for key, value in startSentenceList.items():
+        startSentenceList[key] = value/totalSentences
     wordToTagModel = generateProp(wordToTagModel)
     tagToWordModel = generateProp(tagToWordModel)
+    listofTags = set(listofTags)
 
 getWordList([''])
-generateSenteces([''])
+# generateSenteces([''])
 trainOnData()
-print("test")
