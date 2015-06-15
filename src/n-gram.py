@@ -118,15 +118,43 @@ def useTestData():
     global totalGuesses
     for line in testingData.splitlines():
         dic = getTagFromLine(line)
+        isFirstWord = True
         items = list(dic.items())
         firstWord = items[0][0]
         maxMTag = initCalcM(firstWord)
         if maxMTag is items[0][1]:
             correctGuesses += 1
         totalGuesses += 1
-    for word, tag in dic.items():
+        for word, realTag in dic.items():
+            if isFirstWord:
+                isFirstWord = False
+                continue
+            currentMaxM = 0
+            currentMaxTag = ""
+            for outerTags in tagsAndMs:
+                probWordGivenTag = tagToWordModel.get(outerTags).get(word, 0)
+                currentInnerMaxM = 0
+                currentInnerMaxTag = ""
+                for innerTag in tagsAndMs:
+                    innerTagModel = tagToTagModel.get(innerTag)
+                    probTagToTag = innerTagModel.get(outerTags, 0)
+                    innerTagM = tagsAndMs[innerTag]
 
-            print(word)
+                    newInnerM = probTagToTag * innerTagM
+                    if newInnerM > currentInnerMaxM:
+                        currentInnerMaxM = newInnerM
+                        currentInnerMaxTag = innerTag
+                newM = probWordGivenTag*currentInnerMaxM
+                tagsAndMs[outerTags] = newM
+                if newM > currentMaxM:
+                    currentMaxM = newM
+                    currentMaxTag = outerTags
+            if currentMaxTag is realTag:
+                correctGuesses += 1
+            totalGuesses += 1
+
+            # print(word)
+    print(correctGuesses/totalGuesses)
 
 def initCalcM(word):
     maxM = 0
@@ -142,7 +170,7 @@ def initCalcM(word):
                 maxM = newM
                 maxTag = tag
         else:
-            tagsAndMs[tag](0)
+            tagsAndMs[tag] = 0
     return maxTag
 
 getWordList([''])
