@@ -101,7 +101,15 @@ def trainOnData():
     tagToWordModel = generateProp(tagToWordModel)
     listofTags = set(listofTags)
 
-def useTrainingData():
+def getTagFromLine(line):
+    lineDic = {}
+    for wordWithTag in line.split():
+        word = (wordWithTag.split("_")[0]).lower()
+        tag = wordWithTag.split("_")[1]
+        lineDic[word] = tag
+    return lineDic
+
+def useTestData():
     for line in testingData.splitlines():
         for word in line:
             print(word)
@@ -109,4 +117,4 @@ def useTrainingData():
 getWordList([''])
 # generateSenteces([''])
 trainOnData()
-useTrainingData()
+useTestData()
