@@ -8,7 +8,7 @@ trainingData = open(trainingFile).read()
 testingData = open(testingFile).read()
 
 model = {}
-wordToTagModel = {}
+tagToTagModel = {}
 tagToWordModel = {}
 
 tagToTagProb = {}
@@ -65,7 +65,7 @@ def generateSenteces(context):
     print()
 
 def trainOnData():
-    global wordToTagModel
+    global tagToTagModel
     global tagToWordModel
     global totalSentences
     global startSentenceList
@@ -84,9 +84,9 @@ def trainOnData():
                 firstWord = False
 
             else:
-                temp = wordToTagModel.setdefault(str(context),{})
+                temp = tagToTagModel.setdefault(str(context),{})
                 temp[str(tag)] = temp.get(str(tag), 0) + 1
-                wordToTagModel[str(context)] = temp
+                tagToTagModel[str(context)] = temp
 
             tempTwo = tagToWordModel.setdefault(str(tag),{})
             tempTwo[str(word)] = tempTwo.get(str(word), 0) + 1
@@ -97,7 +97,7 @@ def trainOnData():
 
     for key, value in startSentenceList.items():
         startSentenceList[key] = value/totalSentences
-    wordToTagModel = generateProp(wordToTagModel)
+    tagToTagModel = generateProp(tagToTagModel)
     tagToWordModel = generateProp(tagToWordModel)
     listofTags = set(listofTags)
 
