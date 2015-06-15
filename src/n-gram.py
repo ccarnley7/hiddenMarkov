@@ -1,4 +1,5 @@
 import random
+import collections
 
 infilename = "2009-obama.txt"
 testingFile = "testing.txt"
@@ -102,7 +103,7 @@ def trainOnData():
     listofTags = set(listofTags)
 
 def getTagFromLine(line):
-    lineDic = {}
+    lineDic = collections.OrderedDict()
     for wordWithTag in line.split():
         word = (wordWithTag.split("_")[0]).lower()
         tag = wordWithTag.split("_")[1]
@@ -111,10 +112,11 @@ def getTagFromLine(line):
 
 def useTestData():
     for line in testingData.splitlines():
+        dic = getTagFromLine(line)
         for word in line:
             print(word)
 
 getWordList([''])
 # generateSenteces([''])
-trainOnData()
+# trainOnData()
 useTestData()
